@@ -8,23 +8,34 @@ const getNotes = () =>{
 const addNotes = (title , body) => {
   const notes = loadNotes()
 
-notes.push({
-    title: title,
-    body: body
-})
+  const duplicateNotes = notes.filter((notes)=>{
+return notes.title ===title
+  })
+  if (duplicateNotes.lenght === 0) {
+    
+      notes.push({
+          title: title,
+          body: body
+      })
+      
+          Save(notes)
+console.log('note added');
 
-    Save(notes)
+} 
+console.log('title taken');
+
 }
+
 
 const Save = (notes) => {
   const dataJSON = JSON.stringify(notes)
-  fs.writeFileSync('notes.json',dataJSON)
+  fs.writeFileSync('./notes.json',dataJSON)
  
 }
 
 const loadNotes = () => {
 try {
-    const dataBuffer = fs.readFileSync("notes.json")
+    const dataBuffer = fs.readFileSync("./notes.json")
     const datajson = dataBuffer.toString()
     return JSON.parse(datajson);
     
@@ -35,8 +46,8 @@ try {
 }
 
 module.exports = {
-    getNote:getNotes,
-    addNote:addNotes
+    getNotes:getNotes,
+    addNotes:addNotes
 
 }
 
