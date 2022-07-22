@@ -1,56 +1,44 @@
-const { demandOption } = require('yargs');
-const yargs = require('yargs');
+const fs = require('fs');
 
+const getNotes = () =>{
 
-// add cmd
-yargs.command({
-    command:'add',
-    describe: 'add a note',
-    builder:{
-      title:{
-            describe:"add a note",
-            demandOption:true,
-            type:'string'
-        } 
-    },
-    body:{
-        describe: "value of the title",
-        demandOption:true,
-        type:'string'
-    },
-    handler:function(args){
-        // console.log('adding notes',args);
-        console.log("Title : "  + args.title + "body : " + args.body );
-    }
+    return "your notes"
+}
+
+const addNotes = (title , body) => {
+  const notes = loadNotes()
+
+notes.push({
+    title: title,
+    body: body
 })
 
-// remove cmd
-yargs.command({
-    command:'remove',
-    describe: 'remove a note',
-    handler:function(){
-        console.log(' note removed');
-    }
-})
+    Save(notes)
+}
 
-// list cmd
-yargs.command({
-    command:'list',
-    describe: 'list a note',
-    handler:function(){
-        console.log('list all note');
-    }
-})
+const Save = (notes) => {
+  const dataJSON = JSON.stringify(notes)
+  fs.writeFileSync('notes.json',dataJSON)
+ 
+}
 
-// read cmd
-yargs.command({
-    command:'read',
-    describe: 'read the note',
-    handler:function(){
-        console.log('reading a note');
-    }
-})
+const loadNotes = () => {
+try {
+    const dataBuffer = fs.readFileSync("notes.json")
+    const datajson = dataBuffer.toString()
+    return JSON.parse(datajson);
+    
+} catch (e) {
+    return []
+}
 
-// console.log(yargs.argv); // actually does somthing 
-//    ^
-yargs.parse()
+}
+
+module.exports = {
+    getNote:getNotes,
+    addNote:addNotes
+
+}
+
+
+
