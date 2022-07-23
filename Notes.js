@@ -1,58 +1,46 @@
-
-const yargs = require('yargs');
-const notes = require('./Notes.js');
+const fs = require('fs')
 
 
-// add cmd
-yargs.command({
-    command:'add',
-    describe: 'add a note',
-    builder:{
-      title:{
-            describe:"add a note",
-            demandOption:true,
-            type:'string'
-        } 
-    },
-    body:{
-        describe: "value of the title",
-        demandOption:true,
-        type:'string'
-    },
-    handler:function(args){
-        // console.log('adding notes',args);
-        // console.log("Title : "  + args.title + "body : " + args.body );
-        notes.addNotes(args.title,args.body)
+const addNote = (title, body) => {
+    const notes = loadNotes()
+    const duplicateNote = notes.find((note) => note.title === title)
+
+    if (!duplicateNote) {
+        notes.push({
+            title: title,
+            body: body
+        })
+        saveNotes(notes)
+        console.log('New note added!')
+    } else {
+        console.log('Note title taken!')
     }
-})
+}
 
-// remove cmd
-yargs.command({
-    command:'remove',
-    describe: 'remove a note',
-    handler:function(){
-        console.log(' note removed');
+
+
+
+
+const saveNotes = (notes) => {
+    const dataJSON = JSON.stringify(notes)
+    fs.writeFileSync('notes.json', dataJSON)
+}
+
+const loadNotes = () => {
+    try {
+        const dataBuffer = fs.readFileSync('notes.json')
+        const dataJSON = dataBuffer.toString()
+        return JSON.parse(dataJSON)
+    } catch (e) {
+        return []
     }
-})
+}
 
-// list cmd
-yargs.command({
-    command:'list',
-    describe: 'list a note',
-    handler:function(){
-        console.log('list all note');
-    }
-})
+module.exports = {
+    addNote: addNote,
+    // removeNote: removeNote,
+    // listNotes: listNotes,
+    // readNote: readNote
+}
 
-// read cmd
-yargs.command({
-    command:'read',
-    describe: 'read the note',
-    handler:function(){
-        console.log('reading a note');
-    }
-})
 
-// console.log(yargs.argv); // actually does somthing 
-//    ^
-yargs.parse()

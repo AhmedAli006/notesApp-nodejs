@@ -1,55 +1,58 @@
-const fs = require('fs');
 
-const getNotes = () =>{
-
-    return "your notes"
-}
-
-const addNotes = (title , body) => {
-  const notes = loadNotes()
-
-  const duplicateNotes = notes.filter((notes)=>{
-return notes.title ===title
-  })
-  if (duplicateNotes.lenght === 0) {
-    
-      notes.push({
-          title: title,
-          body: body
-      })
-      
-          Save(notes)
-console.log('note added');
-
-} 
-console.log('title taken');
-
-}
+const yargs = require('yargs');
+const notes = require('./Notes.js');
 
 
-const Save = (notes) => {
-  const dataJSON = JSON.stringify(notes)
-  fs.writeFileSync('./notes.json',dataJSON)
- 
-}
+// add cmd
+yargs.command({
+    command:'add',
+    describe: 'add a note',
+    builder:{
+      title:{
+            describe:"add a note",
+            demandOption:true,
+            type:'string'
+        } 
+    },
+    body:{
+        describe: "value of the title",
+        demandOption:true,
+        type:'string'
+    },
+    handler:function(args){
+        // console.log('adding notes',args);
+        // console.log("Title : "  + args.title + "body : " + args.body );
+        notes.addNote(args.title,args.body)
+    }
+})
 
-const loadNotes = () => {
-try {
-    const dataBuffer = fs.readFileSync("./notes.json")
-    const datajson = dataBuffer.toString()
-    return JSON.parse(datajson);
-    
-} catch (e) {
-    return []
-}
+// remove cmd
+yargs.command({
+    command:'remove',
+    describe: 'remove a note',
+    handler:function(){
+        console.log(' note removed');
+    }
+})
 
-}
+// list cmd
+yargs.command({
+    command:'list',
+    describe: 'list a note',
+    handler:function(){
+        console.log('list all note');
+    }
+})
 
-module.exports = {
-    getNotes:getNotes,
-    addNotes:addNotes
+// read cmd
+yargs.command({
+    command:'read',
+    describe: 'read the note',
+    handler:function(){
+        console.log('reading a note');
+    }
+})
 
-}
-
-
-
+// console.log(yargs.argv); // actually does somthing 
+//    ^
+yargs.parse()
