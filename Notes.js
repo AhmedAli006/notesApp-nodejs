@@ -33,6 +33,14 @@ if (notes.length > notesToKeep.length) {
 
  }
 
+ const listNotes = () =>{
+const notes = loadNotes()
+console.log('your notes');
+
+notes.forEach(note => {
+    console.log(note.title + ": " + note.body );
+});
+ } 
 
 const saveNotes = (notes) => {
     const dataJSON = JSON.stringify(notes)
@@ -52,7 +60,7 @@ const loadNotes = () => {
 module.exports = {
     addNote: addNote,
     removeNotes: remove,
-    // listNotes: listNotes,
+    listNotes: listNotes,
     // readNote: readNote
 }
 
